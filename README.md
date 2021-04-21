@@ -9,7 +9,6 @@ Finally it merges the output and evaluates different N recommendation tools.
 
 # About the code
 The scripts that obtain soil data and transforms it into APSIM files is adapted from https://github.com/rmartinezferia/APssurgo
-Read the 
 
 # Data inputs
 The file called codes_index.pdf provides a description of each script and a link to additional data needed to run the code
