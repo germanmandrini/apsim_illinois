@@ -1,4 +1,4 @@
-# apsim_illinois
+# Simulations for fields in Illinois using APSIM
 Codes to run multiple APSIM simulations on Illinois-US
 
 # Objective
@@ -11,3 +11,9 @@ Finally it merges the output and evaluates different N recommendation tools.
 The scripts that obtain soil data and transforms it into APSIM files is adapted from https://github.com/rmartinezferia/APssurgo
 Read the 
 
+# Data inputs
+The file called codes_index.pdf provides a description of each script and a link to additional data needed to run the code
+
+# Contact
+Questions about the code and methodology: German Mandrini, Dpt of Crop Sciences, University of Illinois at Urbana-Champaign, germanmandrini@gmail.com
+Questions about collaborations: Nicolas F Martin, Dpt of Crop Sciences, University of Illinois at Urbana-Champaign, nfmartin@illinois.edu
