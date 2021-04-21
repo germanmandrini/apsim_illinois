@@ -9,13 +9,13 @@ codes_folder <-'~' #Server
 
 source('./Codes_useful/R.libraries.R')
 source('./Codes_useful/gm_functions.R')
-source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
 
 #======================================================================================
 #Merge all files
 # YC OUTPUT EVALUATION
 #MERGE FILES
-multiple_files <- list.files("./n_policy_box/Data/yc_output_18", full.names = T)
+multiple_files <- list.files("./apsim_illinois_box/Data/yc_output_18", full.names = T)
 # multiple_files <- multiple_files[sample(1:length(multiple_files), 200)]
 # length(multiple_files)
 
@@ -43,7 +43,7 @@ for(file_n in multiple_files){
 yc_output_dt <- rbindlist(files_list)
 
 #Add regions
-grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
 regions_dt <- data.table(grid10_soils_dt4) %>% .[,.N,.(id_10, region)] %>% .[,-'N']
 sapply(regions_dt, class)
 regions_dt[,id_10 := as.character(id_10)]
@@ -56,7 +56,7 @@ plant_dates_dt2[,day := lapply(strsplit(as.character(Date), split="-"), "[", 3) 
 plant_dates_dt2[,Date := paste0(day, '-Apr')]
 
 
-saveRDS(plant_dates_dt2, "./n_policy_box/Data/files_rds/plant_dates_dt.rds")
+saveRDS(plant_dates_dt2, "./apsim_illinois_box/Data/files_rds/plant_dates_dt.rds")
 
 
 

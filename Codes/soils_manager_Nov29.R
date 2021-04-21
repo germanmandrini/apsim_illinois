@@ -7,7 +7,7 @@ setwd('C:/Users/germa/Box Sync/My_Documents') #dell
 setwd('C:/Users/germanm2/Box Sync/My_Documents') #CPSC
 source('./Codes_useful/R.libraries.R')
 
-grid10_fields_sf <- readRDS('./n_policy_box/Data/Grid/grid10_fields_sf.rds')
+grid10_fields_sf <- readRDS('./apsim_illinois_box/Data/Grid/grid10_fields_sf.rds')
 
 # source("R/moldSSURGO_gm.R")
 
@@ -26,7 +26,7 @@ for(tile_n in c(22,23)){
   nrow(one_tile_sf)
   # if(nrow(one_tile_sf) >10){one_tile_sf <- one_tile_sf[1:10,]}
   
-  source('./n_policy_box/Data/APssurgo_master/R/get_soils_parallel.R')
+  source('./apsim_illinois_box/Data/APssurgo_master/R/get_soils_parallel.R')
 
   grid10_soils_list[[tile_n]] <- fields_sf # rerun 5
 }
@@ -34,7 +34,7 @@ for(tile_n in c(22,23)){
 length(grid10_soils_list)
 
 sapply(grid10_soils_list, nrow)
-saveRDS(grid10_soils_list, "./n_policy_box/Data/Grid/grid10_soils_list.rds")
+saveRDS(grid10_soils_list, "./apsim_illinois_box/Data/Grid/grid10_soils_list.rds")
 
 
 #---------------------------------------------------------------
@@ -45,7 +45,7 @@ obtained_dt <- data.table(grid10_soils_sf2) %>% .[,.N, by = .(id_tile, id_10, id
 missing_sf <- left_join(grid10_fields_sf, obtained_dt, by = c('id_tile', 'id_10', 'id_field'))
 missing_sf <- missing_sf[is.na(missing_sf$ok),] %>% dplyr::select(-ok)
 
-source('./n_policy_box/Data/APssurgo_master/R/get_soils_seq.R')
+source('./apsim_illinois_box/Data/APssurgo_master/R/get_soils_seq.R')
 
 results_list <- list()
 for(field_n in 1:nrow(missing_sf)){
@@ -67,25 +67,25 @@ grid10_soils_sf2 <- unique(grid10_soils_sf2)
 
 grid10_soils_list[[length(grid10_soils_list)+1]] <- dplyr::select(fields_sf, -ok)
   
-saveRDS(grid10_soils_sf2, "./n_policy_box/Data/Grid/grid10_soils_sf2.rds")
-grid10_soils_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_sf2.rds")
+saveRDS(grid10_soils_sf2, "./apsim_illinois_box/Data/Grid/grid10_soils_sf2.rds")
+grid10_soils_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_sf2.rds")
 
 #---------------------------------------------------------------  
 # Clean the soils (replace small areas by biggest)
-source('./n_policy_git/Codes/clean_fields_step1.R')
-grid10_soils_dt3 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt3.rds")
+source('./apsim_illinois_git/Codes/clean_fields_step1.R')
+grid10_soils_dt3 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt3.rds")
 length(unique(grid10_soils_dt3$mukey)) #total soils to download
 
 #---------------------------------------------------------------  
 # Step 2 get the horizons information
-source('./n_policy_box/Data/APssurgo_master/R/get_horizons_parallel.R')
-grid10_horizons_v1_dt <- readRDS("./n_policy_box/Data/Grid/grid10_horizons_v1_dt.rds")
+source('./apsim_illinois_box/Data/APssurgo_master/R/get_horizons_parallel.R')
+grid10_horizons_v1_dt <- readRDS("./apsim_illinois_box/Data/Grid/grid10_horizons_v1_dt.rds")
 
 
 # Clean the soils not available in SSURGO
-source('./n_policy_git/Codes/clean_fields_step2.R')
-grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
-grid10_fields_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+source('./apsim_illinois_git/Codes/clean_fields_step2.R')
+grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
+grid10_fields_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
 
 #---------------------------------------------------------------
 # Step 3 Add more information and save
@@ -95,21 +95,21 @@ grid10_fields_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
 # Add the id_tile to make folders based on it. If a mukey is in more than 1 tile, it will be located in the lower id_tile
 # grid10_horizons_v2_dt <- merge(info, grid10_horizons_v1_dt, by = 'mukey')
 # setcolorder(grid10_horizons_v2_dt, c('id_tile','mukey', 'X', 'Y'))
-# saveRDS(grid10_horizons_v2_dt, "./n_policy_box/Data/Grid/grid10_horizons_v2_dt.rds")
-# grid10_horizons_v2_dt <- readRDS("./n_policy_box/Data/Grid/grid10_horizons_v2_dt.rds")
+# saveRDS(grid10_horizons_v2_dt, "./apsim_illinois_box/Data/Grid/grid10_horizons_v2_dt.rds")
+# grid10_horizons_v2_dt <- readRDS("./apsim_illinois_box/Data/Grid/grid10_horizons_v2_dt.rds")
 #---------------------------------------------------------------
 # Create one main soil for each region
 regions_dt <- grid10_soils_dt4[,.(region, mukey)] %>%unique() %>% data.table()
 grid10_horizons_v1_dt <- merge(grid10_horizons_v1_dt, regions_dt, by = 'mukey')
 
 regions_horizons_dt <- grid10_horizons_v1_dt[, lapply(.SD, mean, na.rm=TRUE), by= .(region, top, bottom, thick, center)]
-saveRDS(regions_horizons_dt, "./n_policy_box/Data/Grid/regions_horizons_dt.rds")
+saveRDS(regions_horizons_dt, "./apsim_illinois_box/Data/Grid/regions_horizons_dt.rds")
 
 #---------------------------------------------------------------
-grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
 
-grid10_soils_dt4_old <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4_old.rds")
+grid10_soils_dt4_old <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4_old.rds")
 grid10_soils_dt4_old[,id10_field_mukey := paste(id_10, id_field, mukey, sep = '_')]
 
 grid10_soils_dt4 <- grid10_soils_dt4[!id10_field_mukey %in% unique(grid10_soils_dt4_old$id10_field_mukey)]
-saveRDS(grid10_soils_dt4, "./n_policy_box/Data/Grid/grid10_soils_dt4_difference.rds")
+saveRDS(grid10_soils_dt4, "./apsim_illinois_box/Data/Grid/grid10_soils_dt4_difference.rds")

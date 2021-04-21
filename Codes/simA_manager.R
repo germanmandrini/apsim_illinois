@@ -63,31 +63,31 @@ if(server|cpsc){
   
   # CREATE ALL FILES
   start1 <- Sys.time()
-  "C:/Users/germanm2/Documents/n_policy_git/Codes/simB_create_instructions.R"
-  "./n_policy_git/Codes/simB_create_instructions.R"
-  source(paste0(codes_folder, '/n_policy_git/Codes/simB_create_instructions.R'))
+  "C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simB_create_instructions.R"
+  "./apsim_illinois_git/Codes/simB_create_instructions.R"
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/simB_create_instructions.R'))
   instructions1_rows <- nrow(instructions)
   
   #RUN ALL APSIM FILES
   start2 <- Sys.time()
-  "C:/Users/germanm2/Documents/n_policy_git/Codes/simF_run_files.R"
-  "./n_policy_git/Codes/simF_run_files.R"
-  source(paste0(codes_folder, '/n_policy_git/Codes/simF_run_files.R'))
+  "C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simF_run_files.R"
+  "./apsim_illinois_git/Codes/simF_run_files.R"
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/simF_run_files.R'))
   
   #MERGE ALL THE OUTPUT
   start3 <- Sys.time()
-  "C:/Users/germanm2/Documents/n_policy_git/Codes/simG_merge_results.R"
-  "./n_policy_git/Codes/simG_merge_results.R"
-  source(paste0(codes_folder, '/n_policy_git/Codes/simG_merge_results.R'))
+  "C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simG_merge_results.R"
+  "./apsim_illinois_git/Codes/simG_merge_results.R"
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/simG_merge_results.R'))
   
   start4 <- Sys.time()
   
   #MAKE YEARLY SUMMARY
-  files_daily <- list.files(paste0('./n_policy_box/Data/yc_output_', batch_n, '_', water_n), pattern = paste0('^',id10_n, '_'), full.names = T)
+  files_daily <- list.files(paste0('./apsim_illinois_box/Data/yc_output_', batch_n, '_', water_n), pattern = paste0('^',id10_n, '_'), full.names = T)
   print(files_daily)
-  "C:/Users/germanm2/Documents/n_policy_git/Codes/simH_daily_to_yearly.R"
-  './n_policy_git/Codes/simH_daily_to_yearly.R'
-  source(paste0(codes_folder, '/n_policy_git/Codes/simH_daily_to_yearly.R'))
+  "C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simH_daily_to_yearly.R"
+  './apsim_illinois_git/Codes/simH_daily_to_yearly.R'
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/simH_daily_to_yearly.R'))
   
   unlink(directory, recursive = TRUE)
   
@@ -104,7 +104,7 @@ if(server|cpsc){
                                cell = as.numeric(difftime(start5, start1, units = "mins")))
   print(time_track_tmp)
   
-  folder_name <- paste0('./n_policy_box/Data/time_track_', batch_n)
+  folder_name <- paste0('./apsim_illinois_box/Data/time_track_', batch_n)
   if(!file.exists(folder_name)){dir.create(folder_name, recursive = TRUE)}
   saveRDS(time_track_tmp, paste0(folder_name,'/time_track_',id10_n,'.rds'))
   

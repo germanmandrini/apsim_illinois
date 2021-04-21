@@ -46,11 +46,11 @@ if(FALSE){
 
 
 make_yearly_summary <- function(file_n){
-  # file_n =  "S:/Bioinformatics Lab/germanm2/n_policy_cluster/yc_output/324_680866.rds"
+  # file_n =  "S:/Bioinformatics Lab/germanm2/apsim_illinois_cluster/yc_output/324_680866.rds"
   # file_n <- files_daily[1]
   # file_n <- "S:/Bioinformatics Lab/germanm2/vr_value_v2_cluster/yc_output_1/1367_159876.rds"
   
-  # file_n <- "S:/Bioinformatics Lab/germanm2/n_policy_cluster/yc_output/1060_173466.rds"
+  # file_n <- "S:/Bioinformatics Lab/germanm2/apsim_illinois_cluster/yc_output/1060_173466.rds"
   #--------------------------
   # preparation
   #--------------------------
@@ -266,7 +266,7 @@ make_yearly_summary <- function(file_n){
   #REAL WORK:if there is no error
   if(!inherits(possibleError, "error")){
     # return(rbindlist(all_summaries, fill = TRUE))
-    save_dir <- paste0("./n_policy_box/Data/yc_output_summary_", batch_n, '_', water_n)
+    save_dir <- paste0("./apsim_illinois_box/Data/yc_output_summary_", batch_n, '_', water_n)
     if(!dir.exists(save_dir)){dir.create(save_dir)}
     saveRDS(rbindlist(all_summaries, fill = TRUE), paste0(save_dir,'/', basename(file_n)))
     return(rbindlist(all_summaries, fill = TRUE))
@@ -279,8 +279,8 @@ make_yearly_summary <- function(file_n){
 
 #----------------------------------------------------------------------------
 
-# files_daily <- list.files('S:/Bioinformatics Lab/germanm2/n_policy/yc_output',full.names = T, recursive = T)
-# files_daily <- list.files('./n_policy_box/Data/yc_output',full.names = T, recursive = T)
+# files_daily <- list.files('S:/Bioinformatics Lab/germanm2/apsim_illinois/yc_output',full.names = T, recursive = T)
+# files_daily <- list.files('./apsim_illinois_box/Data/yc_output',full.names = T, recursive = T)
 
 # test <- make_yearly_summary(file_n)
 

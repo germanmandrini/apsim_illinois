@@ -26,7 +26,7 @@ cl <- makeCluster(no_cores,type='SOCK')
 #setwd("~") #server
 #source('./Codes_useful/R.libraries.R')
 
-weather_historic_dt <- readRDS('./n_policy_box/Data/met_files/weather_historic_dt2019.rds')
+weather_historic_dt <- readRDS('./apsim_illinois_box/Data/met_files/weather_historic_dt2019.rds')
 
 
 
@@ -99,7 +99,7 @@ create_z <- function(id_10_n, weather_historic_dt){
   #------------------------------------------------------------------
   # hist(daymet_z_cell[,.(rain = sum(rain)), by = .(z, year)][,rain]) #check. They have to be different
   
-  saveRDS(daymet_z_cell2, paste('./n_policy_box/Data/met_files/weather_z_cell', id_10_n, '_dt.rds', sep = '')) #save each id, it gets to heavy if all together
+  saveRDS(daymet_z_cell2, paste('./apsim_illinois_box/Data/met_files/weather_z_cell', id_10_n, '_dt.rds', sep = '')) #save each id, it gets to heavy if all together
   
   return()
 }
@@ -111,10 +111,10 @@ set.seed(123)
 
 
 #EXPLORE ----
-# years_seq_long <- readRDS("./n_policy_box/Data/files_rds/years_seq_long.rds")
+# years_seq_long <- readRDS("./apsim_illinois_box/Data/files_rds/years_seq_long.rds")
 
 years_seq_long <- c(sort(unique(weather_historic_dt$year)), 2010)
-saveRDS(years_seq_long, "./n_policy_box/Data/files_rds/years_seq_long.rds")
+saveRDS(years_seq_long, "./apsim_illinois_box/Data/files_rds/years_seq_long.rds")
 years_seq_long_dt <- data.table(year = years_seq_long, 
                                 order = 1:length(years_seq_long))
 
@@ -129,7 +129,7 @@ ggplot(weather_explore_dt, aes(x = order, y = rain))+
 
 clusterExport(cl, varlist = keep, envir=environment())
 
-grid10_fields_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+grid10_fields_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
 id_10_seq <- sort(unique(grid10_fields_sf2$id_10))
 
 results_list <- parLapply(cl, id_10_seq, function(x) create_z(x, weather_historic_dt))
@@ -141,7 +141,7 @@ results_list <- parLapply(cl, id_10_seq, function(x) create_z(x, weather_histori
 
 # weather_z_all_cells_dt <-  rbindlist(results_list)
 
-# saveRDS(weather_z_all_cells_dt, './n_policy_box/Data/met_files/weather_z_all_cells_dt.rds')
+# saveRDS(weather_z_all_cells_dt, './apsim_illinois_box/Data/met_files/weather_z_all_cells_dt.rds')
 
 stopCluster(cl)
  

@@ -1,4 +1,4 @@
-source(paste0(codes_folder, '/n_policy_git/APssurgo_master/latlong2county.R'))
+source(paste0(codes_folder, '/apsim_illinois_git/APssurgo_master/latlong2county.R'))
 library(maps)
 library(maptools)
 

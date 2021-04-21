@@ -9,7 +9,7 @@ codes_folder <-'~' #Server
 
 source('./Codes_useful/R.libraries.R')
 source('./Codes_useful/gm_functions.R')
-source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
 
 #======================================================================================
 library("foreach")
@@ -17,8 +17,8 @@ library("doParallel")
 #Merge all files
 # YC OUTPUT EVALUATION
 #MERGE FILES
-multiple_files <- list.files("./n_policy_box/Data/yc_output_55", full.names = T)
-grid10_soils_dt5 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt5.rds") %>% data.table()
+multiple_files <- list.files("./apsim_illinois_box/Data/yc_output_55", full.names = T)
+grid10_soils_dt5 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt5.rds") %>% data.table()
 grid10_soils_dt5[id_field %in% c(1,3), type := 'odd']
 grid10_soils_dt5[id_field %in% c(2,4), type := 'even']
 mukeys_dt <- grid10_soils_dt5[,.(area_ha = sum(area_ha)), by = .(id_10, mukey, type)]
@@ -63,13 +63,13 @@ output_list = foreach(file_n = multiple_files, .combine = "c", .packages = c("da
 
 stopImplicitCluster()
 plant_dates_output2 <- rbindlist(output_list)
-saveRDS(plant_dates_output, "./n_policy_box/Data/files_rds/plant_dates_output.rds") 
+saveRDS(plant_dates_output, "./apsim_illinois_box/Data/files_rds/plant_dates_output.rds") 
 # ---------------------------------------------------------------------
-plant_dates_output <- readRDS( "./n_policy_box/Data/files_rds/plant_dates_output.rds") 
+plant_dates_output <- readRDS( "./apsim_illinois_box/Data/files_rds/plant_dates_output.rds") 
 plant_dates_output <- plant_dates_output[!id_10 %in% c(1128, 1198)]
 plant_dates_output <- rbind(plant_dates_output, plant_dates_output2)
 # #Add latitude
-# grid10_tiles_sf6 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles_sf6.rds") 
+# grid10_tiles_sf6 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds") 
 # grid10_tiles_sf6 <- st_transform(grid10_tiles_sf6, 4326)
 # coord_dt <- data.table(st_coordinates(st_centroid(grid10_tiles_sf6)))
 # grid10_tiles_dt <- data.table(grid10_tiles_sf6)
@@ -89,7 +89,7 @@ setnames(plant_dates_output2, 'day', 'pd_soil')
 
 #======================================================================================
 # Get last frost date. This would be the planting date, considering that it toletates until v5
-weather_historic_dt <- readRDS('./n_policy_box/Data/met_files/weather_historic_dt2019.rds')
+weather_historic_dt <- readRDS('./apsim_illinois_box/Data/met_files/weather_historic_dt2019.rds')
 weather_historic_dt <- weather_historic_dt[day > 10 & day < 120 & mint < 0]
 weather_historic_dt2 <- weather_historic_dt[,.SD[day == max(day)], by = .(id_10, year)]
 weather_historic_dt3 <- weather_historic_dt2[,.(pd_frost = round(mean(day),0),
@@ -97,7 +97,7 @@ weather_historic_dt3 <- weather_historic_dt2[,.(pd_frost = round(mean(day),0),
 
 #------------------------------------------------------------------------------
 #Beautiful map
-grid10_tiles_sf6 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles_sf6.rds") 
+grid10_tiles_sf6 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds") 
 planting_dates_sf <- left_join(grid10_tiles_sf6, weather_historic_dt3, by = 'id_10')
 
 (frost_map <- tm_shape(planting_dates_sf) + tm_polygons('pd_frost', title = 'Last frost (Julian date)') +
@@ -106,7 +106,7 @@ planting_dates_sf <- left_join(grid10_tiles_sf6, weather_historic_dt3, by = 'id_
               # main.title.position = "center",
               main.title.size = 1))
 
-tmap_save(frost_map, filename = "./n_policy_box/Data/figures/frost_map.pdf", height = 8, width = 6)  
+tmap_save(frost_map, filename = "./apsim_illinois_box/Data/figures/frost_map.pdf", height = 8, width = 6)  
 
 #======================================================================================
 # Create a planting date going from south to north
@@ -154,12 +154,12 @@ plant_dates_dt[,p_date_soy2 := format(p_date_soy2,"%d-%b")]
 
 plant_dates_dt[pd_soil> pd_frost]
 
-saveRDS(plant_dates_dt, "./n_policy_box/Data/files_rds/plant_dates_dt.rds")
+saveRDS(plant_dates_dt, "./apsim_illinois_box/Data/files_rds/plant_dates_dt.rds")
 
 #------------------------------------------------------------------------------
 #Go to the R in CPSC and save it there to avoid the error in the cluster
-plant_dates_dt <- readRDS("C:/Users/germanm2/Box Sync/My_Documents/n_policy_box/Data/files_rds/plant_dates_dt.rds")
-saveRDS(plant_dates_dt, "C:/Users/germanm2/Box Sync/My_Documents/n_policy_box/Data/files_rds/plant_dates_dt.rds")
+plant_dates_dt <- readRDS("C:/Users/germanm2/Box Sync/My_Documents/apsim_illinois_box/Data/files_rds/plant_dates_dt.rds")
+saveRDS(plant_dates_dt, "C:/Users/germanm2/Box Sync/My_Documents/apsim_illinois_box/Data/files_rds/plant_dates_dt.rds")
 
 plant_dates_dt[p_date_corn == min(p_date_corn)][1]
 plant_dates_dt[p_date_corn == 100][1]

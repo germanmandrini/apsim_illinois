@@ -1,6 +1,6 @@
-grid10_horizons_v1_dt <- readRDS("./n_policy_box/Data/Grid/grid10_horizons_v1_dt.rds")
+grid10_horizons_v1_dt <- readRDS("./apsim_illinois_box/Data/Grid/grid10_horizons_v1_dt.rds")
 
-grid10_soils_dt3 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt3.rds")
+grid10_soils_dt3 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt3.rds")
 
 grid10_soils_dt3[,apsoil := ifelse(mukey %in% unique(grid10_horizons_v1_dt$mukey), 1, 0)]
 
@@ -16,7 +16,7 @@ grid10_soils_dt4 <- grid10_soils_dt3[grid10_soils_dt3$apsoil == 1, ] %>% dplyr::
 grid10_soils_dt4[, field_ha := sum(area_ha), by = .(id_tile, id_10, id_field)]
 grid10_soils_dt4 <- grid10_soils_dt4[field_ha > 39]
 
-grid10_fields_sf <- readRDS('./n_policy_box/Data/Grid/grid10_fields_sf.rds')
+grid10_fields_sf <- readRDS('./apsim_illinois_box/Data/Grid/grid10_fields_sf.rds')
 table(st_is_empty(grid10_fields_sf))
 
 good_fields_dt <- grid10_soils_dt4[,.N, by = .(id_10, id_field)] %>% .[,-'N'] %>% .[,ok := 1]
@@ -30,8 +30,8 @@ table(st_is_empty(grid10_fields_sf2))
 grid10_fields_sf2 <- cbind(grid10_fields_sf2, st_coordinates(st_centroid(grid10_fields_sf2))) %>% setnames(c('X', "Y"), c('long', 'lat'))
 grid10_soils_dt4 <- merge(grid10_soils_dt4, data.table(grid10_fields_sf2) %>% .[,.(id_10, id_field, long, lat)], by = c('id_10', 'id_field'))
 
-saveRDS(grid10_soils_dt4, "./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
-saveRDS(grid10_fields_sf2, "./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+saveRDS(grid10_soils_dt4, "./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
+saveRDS(grid10_fields_sf2, "./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
 
 summary(grid10_horizons_v1_dt$restriction)
 
@@ -39,7 +39,7 @@ summary(grid10_horizons_v1_dt$restriction)
 # GET REGIONS - they will have the same amount of corn cells on them
 # This was done later but then I realized I need it before running the simulations
 if(FALSE){
-  grid10_tiles_sf5 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles.sf5.rds") 
+  grid10_tiles_sf5 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles.sf5.rds") 
   # 
   # tm_shape(grid10_tiles_sf5) + tm_polygons("county_name")
   # 
@@ -61,9 +61,9 @@ if(FALSE){
   # library(smoothr)
   # area_thresh <- units::set_units(10*10+10, km^2)
   # grid10_region2 <- fill_holes(grid10_region, threshold = area_thresh)
-  # st_write(grid10_region, "./n_policy_box/Data/shapefiles/grid10_region.shp", delete_dsn = TRUE)
+  # st_write(grid10_region, "./apsim_illinois_box/Data/shapefiles/grid10_region.shp", delete_dsn = TRUE)
   
-  grid10_region_by_hand <- sf::read_sf('./n_policy_box/Data/shapefiles/grid10_region_by_hand_mrtn.shp')
+  grid10_region_by_hand <- sf::read_sf('./apsim_illinois_box/Data/shapefiles/grid10_region_by_hand_mrtn.shp')
   grid10_region_by_hand <- st_transform(grid10_region_by_hand, crs = st_crs(grid10_tiles_sf5))
   # tm_shape(grid10_region_by_hand) + tm_polygons('region')
   
@@ -79,29 +79,29 @@ if(FALSE){
   grid10_tiles_sf6 <- grid10_tiles_sf6 %>% dplyr::mutate(region = ifelse(is.na(region) & lat < lat_limit, 1, region))
   tm_shape(grid10_tiles_sf6) + tm_polygons('region')
   
-  saveRDS(grid10_tiles_sf6, "./n_policy_box/Data/Grid/grid10_tiles_sf6.rds") 
-  grid10_tiles_sf6 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles_sf6.rds") 
+  saveRDS(grid10_tiles_sf6, "./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds") 
+  grid10_tiles_sf6 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds") 
   
   #Update other files
   regions_dt <- data.table(grid10_tiles_sf6) %>% .[,.N,.(id_10, region)] %>% .[,-'N']
   grid10_soils_dt4 <- data.table(left_join(grid10_soils_dt4[,-'region'], regions_dt[,.(id_10, region)], by = 'id_10'))
   grid10_soils_dt4 <- data.table(grid10_soils_dt4)
   table(grid10_soils_dt4$region)
-  saveRDS(grid10_soils_dt4, "./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+  saveRDS(grid10_soils_dt4, "./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
   
-  grid10_fields_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+  grid10_fields_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
   grid10_fields_sf2$region <- NULL
   grid10_fields_sf2 <- left_join(grid10_fields_sf2, regions_dt[,.(id_10, region)], by = 'id_10')
-  saveRDS(grid10_fields_sf2, "./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+  saveRDS(grid10_fields_sf2, "./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
   
   #Add hybrids
-  # grid10_tiles_sf6 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles_sf6.rds")
-  # hybrids_by_hand_sf <- sf::read_sf('./n_policy_box/Data/shapefiles/hybrids_by_hand.shp')
+  # grid10_tiles_sf6 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds")
+  # hybrids_by_hand_sf <- sf::read_sf('./apsim_illinois_box/Data/shapefiles/hybrids_by_hand.shp')
   # hybrids_by_hand_sf <- st_transform(hybrids_by_hand_sf, crs = st_crs(grid10_tiles_sf6))
   # setnames(hybrids_by_hand_sf, 'id', 'hybrids_rm')
   # grid10_tiles_sf6 <- st_join(grid10_tiles_sf6, hybrids_by_hand_sf, join = st_intersects, largest = T)
   # tm_shape(grid10_tiles_sf6) + tm_polygons('hybrids_rm')
   # grid10_tiles_sf6 <- grid10_tiles_sf6 %>% dplyr::mutate(hybrids_rm = ifelse(is.na(hybrids_rm) , '110', hybrids_rm))
-  # saveRDS(grid10_tiles_sf6, "./n_policy_box/Data/Grid/grid10_tiles_sf6.rds")
-  # st_write(grid10_tiles_sf6, "./n_policy_box/Data/shapefiles/grid10_tiles_sf6.shp", delete_dsn = TRUE)
+  # saveRDS(grid10_tiles_sf6, "./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds")
+  # st_write(grid10_tiles_sf6, "./apsim_illinois_box/Data/shapefiles/grid10_tiles_sf6.shp", delete_dsn = TRUE)
 }  

@@ -13,7 +13,7 @@ cl <- makeCluster(no_cores,type='SOCK')
 # parallelized simulations 
 #===================================
 
-grid10_tiles_sf <- readRDS('./n_policy_box/Data/Grid/grid10_tiles.sf5.rds')
+grid10_tiles_sf <- readRDS('./apsim_illinois_box/Data/Grid/grid10_tiles.sf5.rds')
 
 download_weather <- function(id_10_n, grid10_tiles_sf){
   # id_10_n = sort(unique(grid10_tiles_sf$id_10))[120]
@@ -32,7 +32,7 @@ download_weather <- function(id_10_n, grid10_tiles_sf){
                         start = 2019, end = 2019, 
                         internal = TRUE)
 
-  # data.table::fwrite(daymet.daymetr$data, './n_policy_box/Data/met_files/testdata.csv')
+  # data.table::fwrite(daymet.daymetr$data, './apsim_illinois_box/Data/met_files/testdata.csv')
   daymet.dt <- daymet.daymetr$data %>% data.table() %>% 
     .[,.(year, day=yday, radn=srad..W.m.2., maxt=tmax..deg.c., mint=tmin..deg.c., 
          rain=prcp..mm.day., dayl = dayl..s.)]
@@ -80,7 +80,7 @@ keep <- c('keep', 'download_weather', 'grid10_tiles_sf')
 #ids_10_seq <- sort(unique(grid10_tiles_sf$id_10))
 
 
-# grid10_soils_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_sf2.rds")  #to avoid downloading cells w/o fields
+# grid10_soils_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_sf2.rds")  #to avoid downloading cells w/o fields
 # 
 # id_10_seq <- sort(unique(grid10_soils_sf2$id_10))
 
@@ -97,11 +97,11 @@ results_list <- parLapply(cl, id_10_seq, function(x) download_weather(x, grid10_
 
 weather_historic_dt2019 <-  rbindlist(results_list)
 
-weather_historic_dt <- readRDS('./n_policy_box/Data/met_files/weather_historic_dt.rds')
+weather_historic_dt <- readRDS('./apsim_illinois_box/Data/met_files/weather_historic_dt.rds')
 weather_historic_dt[,.N, year]
 weather_historic_dt2019 <- rbind(weather_historic_dt, weather_historic_dt2019)
 weather_historic_dt2019[,.N, year]
-saveRDS(weather_historic_dt2019, './n_policy_box/Data/met_files/weather_historic_dt2019.rds')
+saveRDS(weather_historic_dt2019, './apsim_illinois_box/Data/met_files/weather_historic_dt2019.rds')
 
 stopCluster(cl)
 

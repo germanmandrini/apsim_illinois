@@ -3,10 +3,10 @@ library(dplyr)
 library(parallel)
 library(XML)
 
-grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
 
 # sample(grid10_soils_dt4[region == 3]$id_10,3)
-grid10_horizons_v1_dt <- readRDS("./n_policy_box/Data/Grid/grid10_horizons_v1_dt.rds")
+grid10_horizons_v1_dt <- readRDS("./apsim_illinois_box/Data/Grid/grid10_horizons_v1_dt.rds")
 grid10_horizons_v1_dt <- grid10_horizons_v1_dt[bottom <= 200] #make soils to only 150 cm
 
 #---------------------------------------------------------
@@ -36,7 +36,7 @@ if(FALSE){ #test if regions are correct
   regions2 <- data.table(grid10_fields_sf2) %>% .[,.(id_10, region)] %>% unique()
   comp_dt <- merge(regions1, regions2, by = 'id_10')
   comp_dt[region.x != region.y] # has to be empty
-  grid10_tiles_sf6 <- readRDS("./n_policy_box/Data/Grid/grid10_tiles_sf6.rds")
+  grid10_tiles_sf6 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_tiles_sf6.rds")
   tm_shape(grid10_tiles_sf6)+ tm_polygons('region')
   regions3 <- data.table(grid10_tiles_sf6) %>% .[,.(id_10, region)] %>% unique()
   comp_dt <- merge(comp_dt, regions3, by = 'id_10')
@@ -44,11 +44,11 @@ if(FALSE){ #test if regions are correct
 }
 
 if(server){
-  directory <- paste('/home/germanm2/apsim_temp/n_policy/batch_', batch_n, '/cell', id10_n, sep = '')
+  directory <- paste('/home/germanm2/apsim_temp/apsim_illinois/batch_', batch_n, '/cell', id10_n, sep = '')
 }else if(cpsc){
-  directory <- paste('C:/apsim_temp/', Sys.info()["nodename"],'/n_policy/batch_', batch_n, '/cell', id10_n, sep = '')
+  directory <- paste('C:/apsim_temp/', Sys.info()["nodename"],'/apsim_illinois/batch_', batch_n, '/cell', id10_n, sep = '')
 }else if(cluster){
-  directory <- paste('/projects/aces/germanm2/n_policy/batch_', batch_n, '/cell', id10_n, sep = '')
+  directory <- paste('/projects/aces/germanm2/apsim_illinois/batch_', batch_n, '/cell', id10_n, sep = '')
   # directory <- paste('/home/germanm2/scratch/apsim_temp/batch_', batch_n, '/cell', id10_n, sep = '')
   # directory <- paste('/projects/aces/germanm2/scratch/batch_', batch_n, '/cell', id10_n, sep = '')
 }
@@ -74,14 +74,14 @@ if(TRUE & server){
 }
 
 #----------------------------------------------------------------------------
-grid10_fields_sf2 <- readRDS("./n_policy_box/Data/Grid/grid10_fields_sf2.rds")
+grid10_fields_sf2 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_fields_sf2.rds")
 cell_coords <- data.table(grid10_fields_sf2[grid10_fields_sf2$id_10 == id10_n,]) %>% .[,.(X = mean(long), Y = mean(lat))]
 
 #----------------------------------------------------------------------------
 # WEATHER FILES
-source(paste0(codes_folder, '/n_policy_git/Codes/simC_make_z_and_met_files.R'))
-"C:/Users/germanm2/Documents/n_policy_git/Codes/simC_make_z_and_met_files.R"
-"./n_policy_git/Codes/simC_make_z_and_met_files.R"
+source(paste0(codes_folder, '/apsim_illinois_git/Codes/simC_make_z_and_met_files.R'))
+"C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simC_make_z_and_met_files.R"
+"./apsim_illinois_git/Codes/simC_make_z_and_met_files.R"
 
 #----------------------------------------------------------------------------
 # Get the regional soils
@@ -91,19 +91,19 @@ if(server & regional_soils){
   one_cell_dt <- one_cell_dt[1,]
   one_cell_dt[,id_field := 1]
   one_cell_dt[,mukey := region]
-  grid10_horizons_v1_dt <- readRDS("./n_policy_box/Data/Grid/average_regions_soils_dt.rds")
+  grid10_horizons_v1_dt <- readRDS("./apsim_illinois_box/Data/Grid/average_regions_soils_dt.rds")
   grid10_horizons_v1_dt <- grid10_horizons_v1_dt[bottom <=200] #make soils to only 150 cm
 }
 
 #----------------------------------------------------------------------------
 # CREATE SOIL FILES
-source(paste0(codes_folder, '/n_policy_git/APssurgo_master/calc_apsim_variables_onesoil.R'))
-'./n_policy_git/APssurgo_master/calc_apsim_variables_onesoil.R'
-"C:/Users/germanm2/Documents/n_policy_git/APssurgo_master/calc_apsim_variables_onesoil.R"
+source(paste0(codes_folder, '/apsim_illinois_git/APssurgo_master/calc_apsim_variables_onesoil.R'))
+'./apsim_illinois_git/APssurgo_master/calc_apsim_variables_onesoil.R'
+"C:/Users/germanm2/Documents/apsim_illinois_git/APssurgo_master/calc_apsim_variables_onesoil.R"
 
-source(paste0(codes_folder, '/n_policy_git/APssurgo_master/make_apsoils_toolbox.R'))
-'./n_policy_git/APssurgo_master/make_apsoils_toolbox.R'
-"C:/Users/germanm2/Documents/n_policy_git/APssurgo_master/make_apsoils_toolbox.R"
+source(paste0(codes_folder, '/apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R'))
+'./apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R'
+"C:/Users/germanm2/Documents/apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R"
 region_n = one_cell_dt$region[1]
 
 horizons_cell_dt <- grid10_horizons_v1_dt[mukey %in% one_cell_dt$mukey,]
@@ -165,8 +165,8 @@ instructions <- merge(instructions, n_target_dt, by = 'z')
 if(test_small) {instructions <- instructions[1,]}
 if(FALSE) {instructions <- instructions[z==23,]}
 print(instructions )
-"C:/Users/germanm2/Documents/n_policy_git/Codes/simD_create_apsim_files.R"
-"./n_policy_git/Codes/simD_create_apsim_files.R"
-source(paste0(codes_folder, '/n_policy_git/Codes/simD_create_apsim_files.R'))
+"C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simD_create_apsim_files.R"
+"./apsim_illinois_git/Codes/simD_create_apsim_files.R"
+source(paste0(codes_folder, '/apsim_illinois_git/Codes/simD_create_apsim_files.R'))
 
 

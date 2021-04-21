@@ -1,6 +1,6 @@
 #=====================================================================================================
 # STEP 1: Create the data.table with the weathers for each z
-weather_historic_dt <- readRDS('./n_policy_box/Data/met_files/weather_historic_dt2019.rds')
+weather_historic_dt <- readRDS('./apsim_illinois_box/Data/met_files/weather_historic_dt2019.rds')
 
 create_z <- function(id10_n, weather_historic_dt){
   # id10_n = 730

@@ -16,24 +16,24 @@ library(dplyr)
 #---------------------------------------------------------------------------
 
 
-time_track_walltime_dt <- readRDS("./n_policy_box/Data/files_rds/time_track_walltime_dt.rds")
+time_track_walltime_dt <- readRDS("./apsim_illinois_box/Data/files_rds/time_track_walltime_dt.rds")
 time_track_walltime_dt <- time_track_walltime_dt[id_10 %in% unique(c(grid10_soils_dt4[!region %in% c(3)]$id_10))]
 time_track_walltime_dt[,dur := 120]
 time_track_walltime_dt[id_10 == 699, dur := 160]
 time_track_walltime_dt <- time_track_walltime_dt[order(mukey_n)]
 
-write.table(time_track_walltime_dt[,.(id_10, dur)], paste0(codes_folder, '/n_policy_git/time_track_walltime_dt.txt'), row.names = F, col.names = F)
+write.table(time_track_walltime_dt[,.(id_10, dur)], paste0(codes_folder, '/apsim_illinois_git/time_track_walltime_dt.txt'), row.names = F, col.names = F)
 
 #---------------------------------------------------------------------------
 
-# files_all <- list.files('./n_policy_box/Data/yc_output_summary/', recursive = T, pattern = '.rds', full.names = F)
-# files_all <- list.files('S:/Bioinformatics Lab/germanm2/n_policy_cluster/yc_output/', recursive = T, pattern = '.rds')
-# files_all <- list.files('S:/Bioinformatics Lab/germanm2/n_policy/yc_output_summary/', recursive = T, pattern = '.rds')
+# files_all <- list.files('./apsim_illinois_box/Data/yc_output_summary/', recursive = T, pattern = '.rds', full.names = F)
+# files_all <- list.files('S:/Bioinformatics Lab/germanm2/apsim_illinois_cluster/yc_output/', recursive = T, pattern = '.rds')
+# files_all <- list.files('S:/Bioinformatics Lab/germanm2/apsim_illinois/yc_output_summary/', recursive = T, pattern = '.rds')
 
 # id_10_runned <- unique(sapply(strsplit(as.character(files_all), split="_"), "[", 1) )
 
-id_10_walltime_dt <- readRDS("./n_policy_box/Data/files_rds/id_10_walltime_dt.rds")
-# id_10_walltime_dt <- readRDS("./n_policy_box/Data/files_rds/time_track_walltime_dt.rds")
+id_10_walltime_dt <- readRDS("./apsim_illinois_box/Data/files_rds/id_10_walltime_dt.rds")
+# id_10_walltime_dt <- readRDS("./apsim_illinois_box/Data/files_rds/time_track_walltime_dt.rds")
 id_10_walltime_dt <- id_10_walltime_dt[!id_10 %in% unique(two_batches_yc_dt$id_10)]
 id_10_walltime_dt <- id_10_walltime_dt[id_10 %in% id_failed]
 time_track_walltime_dt <-id_10_walltime_dt
@@ -44,45 +44,45 @@ id_10_walltime_dt[N>7,dur := N*4]
 id_10_walltime_dt[N>10,dur := N*5]
 time_track_walltime_dt <- id_10_walltime_dt[order(dur)]
 
-write.table(id_10_walltime_dt[,.(id_10, dur)], paste0(codes_folder,'/n_policy_git/id_10_walltime.txt'), row.names = F, col.names = F)
+write.table(id_10_walltime_dt[,.(id_10, dur)], paste0(codes_folder,'/apsim_illinois_git/id_10_walltime.txt'), row.names = F, col.names = F)
 #---------------------------------------------------------------------------
 
 if(FALSE){ #send again files while still running
   
-  id_10_walltime_dt_sent <- fread('./n_policy/id_10_walltime.txt', col.names = c('id_10', 'dur'))
+  id_10_walltime_dt_sent <- fread('./apsim_illinois/id_10_walltime.txt', col.names = c('id_10', 'dur'))
   id_10_walltime_dt <- id_10_walltime_dt[!id_10 %in% id_10_walltime_dt_sent$id_10]
   id_10_walltime_dt[,dur := N *  4]
-  files_all <- list.files('S:/Bioinformatics Lab/germanm2/n_policy_cluster/yc_output/', recursive = T, pattern = '.rds')
+  files_all <- list.files('S:/Bioinformatics Lab/germanm2/apsim_illinois_cluster/yc_output/', recursive = T, pattern = '.rds')
   id_10_runned <- unique(sapply(strsplit(as.character(files_all), split="_"), "[", 1) )
   id_10_walltime_dt <- id_10_walltime_dt[!id_10 %in% id_10_runned]
   id_10_walltime_dt <- id_10_walltime_dt[order(dur)]
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime2.txt', row.names = F, col.names = F)
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime2.txt', row.names = F, col.names = F)
   
 }
 
 
 if(FALSE){ #create the walltime file
   
-  grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+  grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
   grid10_soils_dt4[, z_type := ifelse(id_field %in% c(1,3), 'odd', 'even')]
   id_10_walltime_dt <- grid10_soils_dt4[,.N, by = .(id_10, mukey, z_type)] #number of id_10 x mukey x 15z combinations
   id_10_walltime_dt2 <- id_10_walltime_dt[,.N, by = .(id_10)][order(N)] 
   id_10_walltime_dt2[,dur := N*6]
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime.txt', row.names = F, col.names = F)
-  saveRDS(id_10_walltime_dt, "./n_policy_box/Data/files_rds/id_10_walltime_dt.rds")
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime.txt', row.names = F, col.names = F)
+  saveRDS(id_10_walltime_dt, "./apsim_illinois_box/Data/files_rds/id_10_walltime_dt.rds")
 }
 
 
 if(FALSE){ #re run id10 that didn't pass the daily to yearly
   id_10_rerun <- unique(sapply(strsplit(as.character(basename(files_daily2)), split="_"), "[", 1) )
-  id_10_walltime_dt <- readRDS("./n_policy_box/Data/files_rds/id_10_walltime_dt.rds")
+  id_10_walltime_dt <- readRDS("./apsim_illinois_box/Data/files_rds/id_10_walltime_dt.rds")
   id_10_walltime_dt <- id_10_walltime_dt[id_10 %in% id_10_rerun]
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime.txt', row.names = F, col.names = F)
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime.txt', row.names = F, col.names = F)
 }
 
 if(FALSE){ #re run id10 that didn't pass the daily to yearly
-  grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
-  files_yearly <- list.files("./n_policy_box/Data/yc_output_summary", recursive = T)
+  grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
+  files_yearly <- list.files("./apsim_illinois_box/Data/yc_output_summary", recursive = T)
   library(data.table)
   already_run_dt <- data.table(id_10 = as.integer(sapply(strsplit(as.character(files_yearly), split="_"), "[", 1)),
                             mukey = gsub(sapply(strsplit(as.character(files_yearly), split="_"), "[", 2),pattern = '.rds', replacement = '')) 
@@ -94,21 +94,21 @@ if(FALSE){ #re run id10 that didn't pass the daily to yearly
   id_10_walltime_dt <- unique(id_10_walltime_dt )
   id_10_walltime_dt <- id_10_walltime_dt[,.N, by =id_10][order(N)]
   id_10_walltime_dt[,dur := N *  4]
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime.txt', row.names = F, col.names = F)
-  saveRDS(id_10_walltime_dt, "./n_policy_box/Data/files_rds/id_10_walltime_dt.rds")
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime.txt', row.names = F, col.names = F)
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime.txt', row.names = F, col.names = F)
+  saveRDS(id_10_walltime_dt, "./apsim_illinois_box/Data/files_rds/id_10_walltime_dt.rds")
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime.txt', row.names = F, col.names = F)
 }  
   
 if(FALSE){ #re run id10 that didn't run in the sensor running
-  normal_files <- list.files("./n_policy_box/Data/yc_output_summary_1", full.names = F)
+  normal_files <- list.files("./apsim_illinois_box/Data/yc_output_summary_1", full.names = F)
   length(normal_files)
-  sensor_files <- list.files("./n_policy_box/Data/yc_output_summary_2", full.names = F)
+  sensor_files <- list.files("./apsim_illinois_box/Data/yc_output_summary_2", full.names = F)
   length(sensor_files)
   missing <- sensor_files[!sensor_files %in% normal_files]
   id_10_missing <- unique(sapply(strsplit(as.character(missing), split="_"), "[", 1) )
   id_10_missing <- c(5, id_10_missing)
   #Create a new walltime file
-  grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
+  grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
   id_10_walltime_dt <- grid10_soils_dt4[,.N, by = .(id_10, id_field, mukey)][,-'N']
   id_10_walltime_dt[id_field == 3 ,id_field := 1 ]
   id_10_walltime_dt[id_field == 4 ,id_field := 2 ]
@@ -117,12 +117,12 @@ if(FALSE){ #re run id10 that didn't run in the sensor running
   id_10_walltime_dt[,dur := N *  2]
   id_10_walltime_dt <- id_10_walltime_dt[id_10 %in% id_10_missing]
   id_10_walltime_dt[id_10 == 5, dur := dur + 10]
-  write.table(id_10_walltime_dt[,.(id_10, dur)], './n_policy/id_10_walltime2.txt', row.names = F, col.names = F)
+  write.table(id_10_walltime_dt[,.(id_10, dur)], './apsim_illinois/id_10_walltime2.txt', row.names = F, col.names = F)
 }
 
 if(FALSE){ #find missing mukeys
-  grid10_soils_dt4 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt4.rds")
-  files_yearly <- list.files("./n_policy_box/Data/yc_output_summary_88_swat", recursive = T)
+  grid10_soils_dt4 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt4.rds")
+  files_yearly <- list.files("./apsim_illinois_box/Data/yc_output_summary_88_swat", recursive = T)
   length(files_yearly)
   
   already_run_dt <- data.table(id_10 = as.integer(sapply(strsplit(as.character(files_yearly), split="_"), "[", 1)),
@@ -136,7 +136,7 @@ if(FALSE){ #find missing mukeys
   incomplete_id10 <- grid10_soils_dt4_difference[is.na(run)]$id_10 %>% unique()
 
   id_10_walltime_dt2 <- id_10_walltime_dt2[id_10 %in% incomplete_id10,]
-  write.table(id_10_walltime_dt2[,.(id_10, dur)], paste0(codes_folder,'/n_policy_git/id_10_walltime.txt'), row.names = F, col.names = F)
+  write.table(id_10_walltime_dt2[,.(id_10, dur)], paste0(codes_folder,'/apsim_illinois_git/id_10_walltime.txt'), row.names = F, col.names = F)
   
 }  
 
@@ -149,8 +149,8 @@ if(FALSE){ #Update using timetrack
   
   source('./Codes_useful/R.libraries.R')
   
-  files_time <- list.files('S:/Bioinformatics Lab/germanm2/n_policy_cameron/time_track',full.names = T, recursive = T)
-  files_time <- list.files('./n_policy_box/Data/time_track_141/',full.names = T, recursive = T)
+  files_time <- list.files('S:/Bioinformatics Lab/germanm2/apsim_illinois_cameron/time_track',full.names = T, recursive = T)
+  files_time <- list.files('./apsim_illinois_box/Data/time_track_141/',full.names = T, recursive = T)
   length(files_time)
   
   results_list <- list()
@@ -184,14 +184,14 @@ if(FALSE){ #Update using timetrack
   
   setnames(time_track_walltime_dt, 'dur5', 'dur')
   
-  write.table(time_track_walltime_dt[,.(id_10, dur)], paste0(codes_folder, '/n_policy_git/time_track_walltime_dt.txt'), row.names = F, col.names = F)
-  saveRDS(time_track_walltime_dt, "./n_policy_box/Data/files_rds/time_track_walltime_dt.rds")
+  write.table(time_track_walltime_dt[,.(id_10, dur)], paste0(codes_folder, '/apsim_illinois_git/time_track_walltime_dt.txt'), row.names = F, col.names = F)
+  saveRDS(time_track_walltime_dt, "./apsim_illinois_box/Data/files_rds/time_track_walltime_dt.rds")
   # missing_dt <- time_track_walltime_dt2[!id_10 %in% time_track_walltime_dt$id_10]
   # missing_dt[,dur := dur +20]
   # time_track_walltime_dt <- rbind(time_track_walltime_dt, missing_dt)
   # time_track_walltime_dt <- time_track_walltime_dt[,.(id_10, mukey_n, dur)][order(dur) ]
   
-  id_10_walltime_dt <- readRDS("./n_policy_box/Data/files_rds/id_10_walltime_dt.rds")
+  id_10_walltime_dt <- readRDS("./apsim_illinois_box/Data/files_rds/id_10_walltime_dt.rds")
   comp_dt <- merge(id_10_walltime_dt, time_track_walltime_dt, by = 'id_10')
   ggplot(comp_dt) +
     geom_point(aes(x = dur.x, y = dur.y))

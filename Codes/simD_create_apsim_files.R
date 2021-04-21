@@ -29,7 +29,7 @@ apsim_create_files <- function(i){
   sim_name <- paste(unlist(instructions_tmp[,.(id_10, mukey, z, water)]), collapse = '_')
   
   #--- load the base apsim file ---# 
-  base_doc <- xml2::read_xml("./n_policy_box/Data/apsim_files/vr_value_v9.apsim")
+  base_doc <- xml2::read_xml("./apsim_illinois_box/Data/apsim_files/vr_value_v9.apsim")
   
   
   #Clean the plots
@@ -44,19 +44,19 @@ apsim_create_files <- function(i){
   
   #--- edit modules directory ---#
   #SurgaceOM Module
-  # module_dir <- paste0(getwd(), '/n_policy_box/Data/apsim_files/modules_edited/SurfaceOM_aug2020.xml')
+  # module_dir <- paste0(getwd(), '/apsim_illinois_box/Data/apsim_files/modules_edited/SurfaceOM_aug2020.xml')
   # module_dir <- gsub("/", "\\", module_dir, fixed=TRUE)
   # node <-  xml_find_all(base_doc,'//surfaceom/ini/filename')
   # xml_text(node) <- module_dir
   
   #Maize Module
-  module_dir <- paste0(getwd(), '/n_policy_box/Data/apsim_files/modules_edited/Maize_aug2020.xml')
+  module_dir <- paste0(getwd(), '/apsim_illinois_box/Data/apsim_files/modules_edited/Maize_aug2020.xml')
   module_dir <- gsub("/", "\\", module_dir, fixed=TRUE)
   node <-  xml_find_all(base_doc,'//maize/ini/filename')
   xml_text(node) <- module_dir
   
   #Soybean Module
-  # module_dir <- paste0(getwd(), '/n_policy_box/Data/apsim_files/modules_edited/Soybean_v711.xml')
+  # module_dir <- paste0(getwd(), '/apsim_illinois_box/Data/apsim_files/modules_edited/Soybean_v711.xml')
   # module_dir <- gsub("/", "\\", module_dir, fixed=TRUE)
   # node <-  xml_find_all(base_doc,'//soybean/ini/filename')
   # xml_text(node) <- module_dir
@@ -64,7 +64,7 @@ apsim_create_files <- function(i){
   #--------------------------
   # PLANTING DATE BY REGION
   #--------------------------
-  plant_dates_dt <- readRDS("./n_policy_box/Data/files_rds/plant_dates_dt.rds") %>%
+  plant_dates_dt <- readRDS("./apsim_illinois_box/Data/files_rds/plant_dates_dt.rds") %>%
   .[id_10 == instructions_tmp$id_10] %>% .[1] 
   # plant_dates_dt <- plant_dates_dt[z == instructions_tmp$z]
   planting_start_corn <- plant_dates_dt$p_date_corn2[1]
@@ -164,7 +164,7 @@ apsim_create_files <- function(i){
   #-----------------------------------------------------------------------------------------------
   # 1 - Insert the swim module
   if(instructions_tmp$water == 'swim'){
-    swim_file <- xml2::read_xml("./n_policy_box/Data/apsim_files/LongTermAssessmentsTileDrainage_ger.apsim")
+    swim_file <- xml2::read_xml("./apsim_illinois_box/Data/apsim_files/LongTermAssessmentsTileDrainage_ger.apsim")
     
     node_swim <- xml_find_all(swim_file,'//Swim')
     
@@ -184,9 +184,9 @@ apsim_create_files <- function(i){
   }#end if swat
   #-----------------------------------------------------------------------------------------------
   # 3 - Update the Initial Conditions
-  "C:/Users/germanm2/Documents/n_policy_git/Codes/simE_update_ic.R"
-  "./n_policy_git/Codes/simE_update_ic.R"
-  source(paste0(codes_folder, '/n_policy_git/Codes/simE_update_ic.R')) #simplified version
+  "C:/Users/germanm2/Documents/apsim_illinois_git/Codes/simE_update_ic.R"
+  "./apsim_illinois_git/Codes/simE_update_ic.R"
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/simE_update_ic.R')) #simplified version
   #The initial residue assumes an alternation. Can be improved for account for other types of rotations
   base_doc <- update_ic(base_doc, instructions_tmp)
 

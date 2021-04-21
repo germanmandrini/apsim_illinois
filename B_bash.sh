@@ -17,6 +17,6 @@ bash_n=151
 
 echo "$cell_n"
 
-singularity exec /projects/aces/germanm2/apsim_nov16.simg Rscript /projects/aces/germanm2/n_policy_git/Codes/simA_manager.R $cell_n $bash_n
+singularity exec /projects/aces/germanm2/apsim_nov16.simg Rscript /projects/aces/germanm2/apsim_illinois_git/Codes/simA_manager.R $cell_n $bash_n
 
 

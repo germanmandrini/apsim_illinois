@@ -52,8 +52,8 @@ apsim_merge_data <- function(out_file_n){
 # if(cpsc) id10_n = 561
 
 
-# directory_cell <- paste('./n_policy/apsim_temp/cell', id10_n, sep = '')
-# if(cpsc){directory_cell <- paste('C:/apsim_temp/CPSC-P10E53323/n_policy/cell', id10_n, sep = '')}
+# directory_cell <- paste('./apsim_illinois/apsim_temp/cell', id10_n, sep = '')
+# if(cpsc){directory_cell <- paste('C:/apsim_temp/CPSC-P10E53323/apsim_illinois/cell', id10_n, sep = '')}
 # directory_cell <- paste('./cell', id10_n, sep = '')
 
 out_files_dt <- data.table(path = list.files(directory, pattern = '.out', full.names = T, recursive = T)) #all out files in one folder
@@ -73,8 +73,8 @@ for(mukey_n in mukey_seq){
   results_collection_ls <- lapply(out_files_tmp, function(out_file_n) apsim_merge_data(out_file_n))
   
   #SAVE THE OUTPUT
-  file_output_name <- paste('./n_policy_box/Data/','yc_output','_',batch_n,'_', water_n, '/', id10_n,"_",mukey_n, '.rds', sep = '')
-  # if(cpsc){file_output_name <- paste('S:/Bioinformatics Lab/germanm2/n_policy/',stab_or_yc, id10_n,"_",mukey_n, '.rds', sep = '')}
+  file_output_name <- paste('./apsim_illinois_box/Data/','yc_output','_',batch_n,'_', water_n, '/', id10_n,"_",mukey_n, '.rds', sep = '')
+  # if(cpsc){file_output_name <- paste('S:/Bioinformatics Lab/germanm2/apsim_illinois/',stab_or_yc, id10_n,"_",mukey_n, '.rds', sep = '')}
   
   if(!file.exists(dirname(file_output_name))){ dir.create(dirname(file_output_name), recursive = TRUE) }
   
@@ -96,13 +96,13 @@ print(instructions_stab[order(rows)])
 if(FALSE){
   #COMPARE THE CONTINUOUS SIMULATION VS THE SEQUENTIAL
   # COMPARE THE YIELD
-  ic_files <- list.files(paste0('./n_policy_box/Data/initial_conditions'), full.names = TRUE)
+  ic_files <- list.files(paste0('./apsim_illinois_box/Data/initial_conditions'), full.names = TRUE)
   ic_files <- ic_files[str_detect(basename(ic_files), pattern = paste0(id10_n, '_'))]
   ic_dt <- data.table()
   for(file_n in ic_files){
     ic_dt <- rbind(ic_dt, readRDS(file_n))}
   
-  yc_files <- list.files(paste0('./n_policy_box/Data/yc_output'), full.names = TRUE)
+  yc_files <- list.files(paste0('./apsim_illinois_box/Data/yc_output'), full.names = TRUE)
   yc_files <- yc_files[str_detect(basename(yc_files), pattern = paste0(id10_n, '_'))]
   yc_dt <- data.table()
   for(file_n in yc_files){

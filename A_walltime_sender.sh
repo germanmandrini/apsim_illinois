@@ -1,7 +1,7 @@
 #!/bin/bash
 module load singularity
 
-cat /projects/aces/germanm2/n_policy_git/id_10_walltime.txt | while read i #each line has the cell and the estimated time to be runed
+cat /projects/aces/germanm2/apsim_illinois_git/id_10_walltime.txt | while read i #each line has the cell and the estimated time to be runed
 
 do
 	cell_n="$(cut -d' ' -f1 <<<"$i")" #split the cell string

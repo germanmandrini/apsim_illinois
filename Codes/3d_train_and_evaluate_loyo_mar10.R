@@ -9,18 +9,18 @@ codes_folder <-'C:/Users/germanm2/Documents'#CPSC
 
 source('./Codes_useful/R.libraries.R')
 source('./Codes_useful/gm_functions.R')
-source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
 library(randomForest)
 library(reticulate)
 
 # use_condaenv('GEOANN', conda = '/opt/anaconda3/condabin/conda')
-# source_python("./n_policy_git/Codes/3c_cnn_functions_sep10.py")
+# source_python("./apsim_illinois_git/Codes/3c_cnn_functions_sep10.py")
 
-# yc_yearly_dt3 <- readRDS("./n_policy_box/Data/files_rds/yc_yearly_dt3.rds")
-# grid10_soils_dt5 <- readRDS("./n_policy_box/Data/Grid/grid10_soils_dt5.rds") %>% data.table()
+# yc_yearly_dt3 <- readRDS("./apsim_illinois_box/Data/files_rds/yc_yearly_dt3.rds")
+# grid10_soils_dt5 <- readRDS("./apsim_illinois_box/Data/Grid/grid10_soils_dt5.rds") %>% data.table()
 
-yc_field_dt <- readRDS("./n_policy_box/Data/files_rds/yc_field_dt.rds")
-thresholds_dt <- readRDS( "./n_policy_box/Data/files_rds/thresholds_dt.rds") #this is tricky. Are the mean values after running this script and using the ratio_5 policy for all the z. I do it this way to use always the same
+yc_field_dt <- readRDS("./apsim_illinois_box/Data/files_rds/yc_field_dt.rds")
+thresholds_dt <- readRDS( "./apsim_illinois_box/Data/files_rds/thresholds_dt.rds") #this is tricky. Are the mean values after running this script and using the ratio_5 policy for all the z. I do it this way to use always the same
 
 
 z_n = 10
@@ -69,7 +69,7 @@ for(z_n in 1:30){
     plot(dynamic)
     
     if(level_n == Pn/Pc & z_n == 10){
-      pdf("./n_policy_box/Data/figures/VarImportancePlot_ratio.pdf")
+      pdf("./apsim_illinois_box/Data/figures/VarImportancePlot_ratio.pdf")
       varImpPlot(dynamic, type=2, main = '')
       dev.off() 
     }
@@ -100,7 +100,7 @@ for(z_n in 1:30){
     
     if(level_n == Pn/Pc){
       setnames(prediction_set_aggregated_dt, 'eonr_pred', 'eonr_ratio5')
-      saveRDS(prediction_set_aggregated_dt, paste0("./n_policy_box/Data/files_rds/field_perfomances_tmp_rodrigo/ratio5_recommendations_",z_n, ".rds"))
+      saveRDS(prediction_set_aggregated_dt, paste0("./apsim_illinois_box/Data/files_rds/field_perfomances_tmp_rodrigo/ratio5_recommendations_",z_n, ".rds"))
     }
     
   }#end of ratio loop
@@ -109,7 +109,7 @@ for(z_n in 1:30){
  
   # =========================================================================================================================================================
   # CREATE THE LEACHING FEE MODEL
-  source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
   
   #Load datasets again
   training_set_dt <- yc_field_dt[station == 1 & z != z_n]
@@ -185,7 +185,7 @@ for(z_n in 1:30){
     plot(dynamic)
     
     if(level_n == 5 & z_n == 10){
-      pdf("./n_policy_box/Data/figures/VarImportancePlot_leach.pdf")
+      pdf("./apsim_illinois_box/Data/figures/VarImportancePlot_leach.pdf")
       varImpPlot(dynamic, type=2, main = '')
       dev.off() 
     }
@@ -229,7 +229,7 @@ for(z_n in 1:30){
     
     # =========================================================================================================================================================
     # CREATE THE BALANCE FEE MODEL
-    source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+    source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
     
     #Load datasets again
     training_set_dt <- yc_field_dt[station == 1 & z != z_n]
@@ -306,7 +306,7 @@ for(z_n in 1:30){
       plot(dynamic)
       
       if(level_n == 2 & z_n == 10){
-        pdf("./n_policy_box/Data/figures/VarImportancePlot_bal.pdf")
+        pdf("./apsim_illinois_box/Data/figures/VarImportancePlot_bal.pdf")
         varImpPlot(dynamic, type=2, main = '')
         dev.off() 
       }
@@ -343,12 +343,12 @@ for(z_n in 1:30){
   # =========================================================================================================================================================
   # VOLUNTARY REDUCTION (REDUCE RATIO 5 RECOMENDATIONS)
   
-  source(paste0(codes_folder, '/n_policy_git/Codes/parameters.R'))
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/parameters.R'))
   
   #Load datasets again
   training_set_dt <- yc_field_dt[station == 1 & z != z_n]
   evaluation_set_dt <- yc_field_dt[station != 1 & z == z_n]
-  prediction_set_aggregated_dt <- readRDS(paste0("./n_policy_box/Data/files_rds/field_perfomances_tmp_rodrigo/ratio5_recommendations_",
+  prediction_set_aggregated_dt <- readRDS(paste0("./apsim_illinois_box/Data/files_rds/field_perfomances_tmp_rodrigo/ratio5_recommendations_",
                                                  z_n, ".rds")) #we lower the ratio5 dynamic recommendation
   
   red_seq <- sort(unique(c(seq(0,30,2), seq(18.5,19.5,0.1))))
@@ -395,13 +395,13 @@ for(z_n in 1:30){
   }#end of reduction loop
   perfomances_z_tmp <- rbindlist(results_list)
   
-  saveRDS(perfomances_z_tmp, paste0("./n_policy_box/Data/files_rds/field_perfomances_tmp_rodrigo/field_performances_", z_n,'.rds'))
+  saveRDS(perfomances_z_tmp, paste0("./apsim_illinois_box/Data/files_rds/field_perfomances_tmp_rodrigo/field_performances_", z_n,'.rds'))
 
 }#end of z_n
 
 # load all the results
 perfomances_list <- list()
-files_path <- list.files("./n_policy_box/Data/files_rds/field_performances_tmp_ntree1000", full.names = TRUE, pattern = 'field_performances_[1-9]')
+files_path <- list.files("./apsim_illinois_box/Data/files_rds/field_performances_tmp_ntree1000", full.names = TRUE, pattern = 'field_performances_[1-9]')
 
 for(file_n in files_path){
   # file_n = files_path[1]
@@ -416,10 +416,10 @@ field_perfomances_dt[,.N, .(id_10, id_field)] %>% .[,.N, .(id_10)] %>% .[,N] %>%
 field_perfomances_dt[,.N, .(id_10, id_field, policy, NRT, z)] %>% .[,.N, .(policy)] #field x year by NRT
 4031*15
 
-saveRDS(field_perfomances_dt, "./n_policy_box/Data/files_rds/field_perfomances_dt.rds")
+saveRDS(field_perfomances_dt, "./apsim_illinois_box/Data/files_rds/field_perfomances_dt.rds")
 #--------------------------------------------------------------------------------
 
-field_perfomances_dt <- readRDS("./n_policy_box/Data/files_rds/field_perfomances_dt.rds")
+field_perfomances_dt <- readRDS("./apsim_illinois_box/Data/files_rds/field_perfomances_dt.rds")
 
 thresholds_dt <- field_perfomances_dt[policy == 'ratio_5' & NRT == 'dynamic']
 
@@ -433,8 +433,8 @@ thresholds_dt <- thresholds_dt[,
                              L = mean(L)), by = region]
 # thresholds_dt[,L_thr := round(L * 0.6, 0)]
 # thresholds_dt[, N_balance_thr := round(N_balance-60,  0)] 
-# saveRDS(thresholds_dt, "./n_policy_box/Data/files_rds/thresholds_dt.rds")
+# saveRDS(thresholds_dt, "./apsim_illinois_box/Data/files_rds/thresholds_dt.rds")
 
-thresholds_dt2 <- readRDS("./n_policy_box/Data/files_rds/thresholds_dt.rds")
+thresholds_dt2 <- readRDS("./apsim_illinois_box/Data/files_rds/thresholds_dt.rds")
 
 
