@@ -19,7 +19,7 @@ if(server){
 }else if(cpsc){
   setwd('C:/Users/germanm2/Box Sync/My_Documents')
   codes_folder <-'C:/Users/germanm2/Documents'
-  test_small <- F
+  test_small <- T
   regional_test <- F #makes rates every 25
   regional_soils <- F #uses regional soils
 }else{

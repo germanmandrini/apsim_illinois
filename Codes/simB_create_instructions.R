@@ -104,7 +104,7 @@ source(paste0(codes_folder, '/apsim_illinois_git/APssurgo_master/calc_apsim_vari
 source(paste0(codes_folder, '/apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R'))
 './apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R'
 "C:/Users/germanm2/Documents/apsim_illinois_git/APssurgo_master/make_apsoils_toolbox.R"
-region_n = one_cell_dt$region[1]
+region_n =  as.numeric(str_extract(one_cell_dt$region[1], pattern = '[0-9]'))
 
 horizons_cell_dt <- grid10_horizons_v1_dt[mukey %in% one_cell_dt$mukey,]
 horizons_cell_dt[is.na(ph), ph := 6] #a few soils didn't have ph and apsim doesn't use it
@@ -153,9 +153,9 @@ n_target_vector <- list(sample(1:60, z_count, replace = T), #South
                         sample(1:60, z_count, replace = T),  #Central
                         sample(1:60, z_count, replace = T))[[region_n]] #North
 
-n_target_vector <- list(sample(c(1:10,50:60), z_count, replace = T), #South
-                        sample(c(1:20,40:60), z_count, replace = T),  #Central
-                        sample(c(1:20,50:66), z_count, replace = T))[[region_n]] #North
+# n_target_vector <- list(sample(c(1:10,50:60), z_count, replace = T), #South
+#                         sample(c(1:20,40:60), z_count, replace = T),  #Central
+#                         sample(c(1:20,50:66), z_count, replace = T))[[region_n]] #North
 
 n_target_dt <- data.table(z = unique(instructions$z),
                           n_target= n_target_vector)

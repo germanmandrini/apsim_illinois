@@ -101,6 +101,7 @@ cl <- parallel::makeCluster(no_cores,type='SOCK')
 
 make_met_files <- function(z_n, weather_cell.dt, directory = directory){
   # z_n = 'A1'
+  source(paste0(codes_folder, '/apsim_illinois_git/Codes/APSIM_package.R')) #Load the APSIM package (is deprecated)
   packages_need <- c('APSIM','dplyr', 'data.table', 'sf')
   lapply(packages_need, require, character.only = TRUE)
   
@@ -157,7 +158,7 @@ make_met_files <- function(z_n, weather_cell.dt, directory = directory){
   
 }#end of loc_id_n loop
 
-keep <- c('keep', 'make_met_files','id10_n', 'weather_cell.dt', 'directory')
+keep <- c('keep', 'make_met_files','id10_n', 'weather_cell.dt', 'directory', 'codes_folder')
 
 parallel::clusterExport(cl, varlist = keep, envir=environment())
 
