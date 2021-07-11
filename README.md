@@ -13,7 +13,7 @@ Questions about the code and methodology: German Mandrini, Dpt of Crop Sciences,
 Questions about collaborations: Nicolas F Martin, Dpt of Crop Sciences, University of Illinois at Urbana-Champaign, nfmartin@illinois.edu
 
 # About the code
-The scripts used to obtain soil data and transform it into APSIM files is adapted from https://github.com/rmartinezferia/APssurgo
+The scripts used to obtain soil data and transform it into APSIM files are adapted from https://github.com/rmartinezferia/APssurgo
 
 # Description
 <!--table
